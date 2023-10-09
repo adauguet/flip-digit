@@ -60,14 +60,18 @@ contentView : Model -> Element Msg
 contentView { digits } =
     let
         digitsView =
-            row [ spacing 10 ] (List.indexedMap flippableDigitView (Array.toList digits))
+            row [ spacing 15, Font.size 36 ] (List.indexedMap flippableDigitView (Array.toList digits))
     in
     column [ centerX, centerY, spacing 20 ] <|
         if Array.toList digits |> List.all isNotFlipped then
             [ digitsView, el [ Font.color (rgb255 0 200 0) ] <| text "Bravo !" ]
 
         else
-            [ digitsView ]
+            let
+                count =
+                    List.filter (isNotFlipped >> not) (Array.toList digits) |> List.length
+            in
+            [ digitsView, el [ Font.color (rgb255 200 0 0) ] <| text <| "Erreurs : " ++ String.fromInt count ]
 
 
 flippableDigitView : Int -> FlippableDigit -> Element Msg
@@ -83,7 +87,7 @@ flippableDigitView index ( digit, flipped ) =
                 text <| String.fromChar digit
     in
     Input.button
-        [ paddingXY 10 10
+        [ paddingXY 15 15
         , Background.color (rgb255 220 210 210)
         , Border.rounded 4
         , mouseOver [ Background.color (rgb255 230 220 220) ]
